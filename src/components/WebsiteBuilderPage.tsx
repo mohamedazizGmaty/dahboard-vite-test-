@@ -19,10 +19,12 @@ export default function WebsiteBuilderPage() {
   ])
   const [inputValue, setInputValue] = useState('')
   const [isWorking, setIsWorking] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesAreaRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messagesAreaRef.current) {
+      messagesAreaRef.current.scrollTop = messagesAreaRef.current.scrollHeight
+    }
   }
 
   useEffect(() => {
@@ -165,7 +167,7 @@ export default function WebsiteBuilderPage() {
       </header>
 
       <div className="card chat-card">
-        <div className="messages-area">
+        <div className="messages-area" ref={messagesAreaRef}>
           {messages.map((msg) => (
             <div key={msg.id} className={`message ${msg.role}`}>
               <div className="message-avatar">
@@ -196,7 +198,6 @@ export default function WebsiteBuilderPage() {
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
         </div>
 
         <form className="input-area" onSubmit={handleSubmit}>

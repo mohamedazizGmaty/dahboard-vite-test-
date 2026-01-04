@@ -1,11 +1,16 @@
 import type React from 'react'
+import { useOutletContext } from 'react-router-dom'
 
-type SettingsPageProps = {
-  theme: 'light' | 'dark'
-  onToggleDarkMode: (enabled: boolean) => void
+type Theme = 'light' | 'dark'
+
+type ContextType = {
+  theme: Theme
+  setTheme: (theme: Theme) => void
 }
 
-const SettingsPage: React.FC<SettingsPageProps> = ({ theme, onToggleDarkMode }) => {
+const SettingsPage: React.FC = () => {
+  const { theme, setTheme } = useOutletContext<ContextType>()
+
   return (
     <section className="page">
       <header className="page-header">
@@ -60,7 +65,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ theme, onToggleDarkMode }) 
               <input
                 type="checkbox"
                 checked={theme === 'dark'}
-                onChange={(event) => onToggleDarkMode(event.target.checked)}
+                onChange={(event) => setTheme(event.target.checked ? 'dark' : 'light')}
               />
               <span>Enable dark mode</span>
             </label>

@@ -1,28 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell
+  PieChart, Pie, Cell
 } from 'recharts'
 import * as XLSX from 'xlsx'
 
-// Mock Data
-const salesData = [
-  { name: 'Jan', sales: 4000, leads: 2400 },
-  { name: 'Feb', sales: 3000, leads: 1398 },
-  { name: 'Mar', sales: 2000, leads: 9800 },
-  { name: 'Apr', sales: 2780, leads: 3908 },
-  { name: 'May', sales: 1890, leads: 4800 },
-  { name: 'Jun', sales: 2390, leads: 3800 },
-]
-
-const sourceData = [
-  { name: 'Website', value: 400 },
-  { name: 'Referral', value: 300 },
-  { name: 'Social', value: 300 },
-  { name: 'Email', value: 200 },
-]
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
 
 export default function AnalyticsPage() {
   const [tableData, setTableData] = useState([
@@ -42,6 +25,37 @@ export default function AnalyticsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const ITEMS_PER_PAGE = 10
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Process Data for Charts
+  const chartData = useMemo(() => {
+    // 1. Revenue by Month (Bar Chart)
+    const monthlyData: Record<string, number> = {}
+    
+    tableData.forEach(row => {
+      const date = new Date(row.date)
+      const month = date.toLocaleString('default', { month: 'short' }) // "Jan", "Feb"
+      monthlyData[month] = (monthlyData[month] || 0) + row.revenue
+    })
+
+    const barChartData = Object.keys(monthlyData).map(month => ({
+      name: month,
+      revenue: monthlyData[month]
+    }))
+
+    // 2. Revenue by Product (Pie Chart)
+    const productData: Record<string, number> = {}
+    
+    tableData.forEach(row => {
+      productData[row.product] = (productData[row.product] || 0) + row.revenue
+    })
+
+    const pieChartData = Object.keys(productData).map(product => ({
+      name: product,
+      value: productData[product]
+    }))
+
+    return { barChartData, pieChartData }
+  }, [tableData])
 
   const totalPages = Math.ceil(tableData.length / ITEMS_PER_PAGE)
   const currentData = tableData.slice(
@@ -113,52 +127,57 @@ export default function AnalyticsPage() {
 
       <div className="analytics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Sales Chart */}
-        <div className="card" style={{ height: '400px' }}>
-          <h3>Revenue & Leads</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={salesData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="name" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
-                itemStyle={{ color: '#e5e7eb' }}
-              />
-              <Legend />
-              <Bar dataKey="sales" fill="#8884d8" name="Sales ($)" />
-              <Bar dataKey="leads" fill="#82ca9d" name="Leads" />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="card" style={{ height: '400px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ marginBottom: '1rem' }}>Revenue by Month</h3>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData.barChartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="name" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                  itemStyle={{ color: '#e5e7eb' }}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                />
+                <Legend />
+                <Bar dataKey="revenue" fill="#8884d8" name="Revenue ($)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Sources Pie Chart */}
-        <div className="card" style={{ height: '400px' }}>
-          <h3>Lead Sources</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={sourceData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={120}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {sourceData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                 contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
-                 itemStyle={{ color: '#e5e7eb' }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="card" style={{ height: '400px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ marginBottom: '1rem' }}>Revenue by Product</h3>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData.pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {chartData.pieChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                   contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                   itemStyle={{ color: '#e5e7eb' }}
+                   formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 

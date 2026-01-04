@@ -1,33 +1,49 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
 } from 'recharts'
 import * as XLSX from 'xlsx'
+import { supabase } from '../lib/supabaseClient'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
 
 export default function AnalyticsPage() {
-  const [tableData, setTableData] = useState([
-    { id: 1, product: 'Consulting', revenue: 5000, date: '2023-01-15' },
-    { id: 2, product: 'Implementation', revenue: 12000, date: '2023-02-20' },
-    { id: 3, product: 'Training', revenue: 3000, date: '2023-03-10' },
-    { id: 4, product: 'Consulting', revenue: 4500, date: '2023-03-15' },
-    { id: 5, product: 'Audit', revenue: 2000, date: '2023-03-20' },
-    { id: 6, product: 'Implementation', revenue: 11000, date: '2023-04-05' },
-    { id: 7, product: 'Training', revenue: 3200, date: '2023-04-10' },
-    { id: 8, product: 'Consulting', revenue: 5100, date: '2023-04-15' },
-    { id: 9, product: 'Audit', revenue: 2100, date: '2023-04-22' },
-    { id: 10, product: 'Implementation', revenue: 12500, date: '2023-05-01' },
-    { id: 11, product: 'Training', revenue: 3100, date: '2023-05-10' },
-    { id: 12, product: 'Consulting', revenue: 5300, date: '2023-05-15' },
-  ])
+  const [tableData, setTableData] = useState<any[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const ITEMS_PER_PAGE = 10
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Process Data for Charts
-  const chartData = useMemo(() => {
+  useEffect(() => {
+    fetchTransactions()
+  }, [])
+
+  const fetchTransactions = async () => {
+    const { data, error } = await supabase
+      .from('Transactions')
+      .select('*')
+      .order('Date', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching transactions:', error)
+    } else if (data) {
+      const formattedData = data.map((row: any) => ({
+        id: row.id,
+        product: row.Product,
+        revenue: row.Revenue,
+        date: row.Date
+      }))
+      setTableData(formattedData)
+    }
+  }
+
+  // Process Data for Charts & KPIs
+  const { chartData, kpiData } = useMemo(() => {
+    // KPIs
+    const totalRevenue = tableData.reduce((sum, row) => sum + row.revenue, 0)
+    const totalTransactions = tableData.length
+    const avgDealValue = totalTransactions > 0 ? totalRevenue / totalTransactions : 0
+
     // 1. Revenue by Month (Bar Chart)
     const monthlyData: Record<string, number> = {}
     
@@ -54,7 +70,23 @@ export default function AnalyticsPage() {
       value: productData[product]
     }))
 
-    return { barChartData, pieChartData }
+    // 3. Cumulative Revenue Trend (Line Chart)
+    // Sort by date first
+    const sortedData = [...tableData].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    let cumulative = 0
+    const lineChartData = sortedData.map(row => {
+      cumulative += row.revenue
+      return {
+        date: row.date,
+        cumulativeRevenue: cumulative,
+        dailyRevenue: row.revenue
+      }
+    })
+
+    return { 
+      chartData: { barChartData, pieChartData, lineChartData },
+      kpiData: { totalRevenue, totalTransactions, avgDealValue }
+    }
   }, [tableData])
 
   const totalPages = Math.ceil(tableData.length / ITEMS_PER_PAGE)
@@ -75,26 +107,32 @@ export default function AnalyticsPage() {
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       const bstr = evt.target?.result
       const wb = XLSX.read(bstr, { type: 'binary' })
       const wsname = wb.SheetNames[0]
       const ws = wb.Sheets[wsname]
       const data = XLSX.utils.sheet_to_json(ws)
       
-      setTableData(prev => {
-        const maxId = prev.length > 0 ? Math.max(...prev.map(row => row.id)) : 0;
-        
-        // Map imported data to match table structure
-        const formattedData = data.map((row: any, index) => ({
-          id: maxId + 1 + index, // Auto-increment ID
-          product: row.product || row.Product || row['Product/Service'] || 'Unknown',
-          revenue: Number(row.revenue || row.Revenue || 0),
-          date: row.date || row.Date || new Date().toISOString().split('T')[0]
-        }))
+      // Prepare data for Supabase
+      // We explicitly exclude 'id' so Supabase handles auto-increment
+      const dbData = data.map((row: any) => ({
+        Product: row.product || row.Product || row['Product/Service'] || 'Unknown',
+        Revenue: Number(row.revenue || row.Revenue || 0),
+        Date: row.date || row.Date || new Date().toISOString().split('T')[0]
+      }))
 
-        return [...prev, ...formattedData]
-      })
+      const { error } = await supabase
+        .from('Transactions')
+        .insert(dbData)
+
+      if (error) {
+        console.error('Error inserting data:', error)
+        alert('Failed to import data to database')
+      } else {
+        fetchTransactions()
+        alert('Data imported successfully!')
+      }
     }
     reader.readAsBinaryString(file)
   }
@@ -124,6 +162,28 @@ export default function AnalyticsPage() {
           </button>
         </div>
       </header>
+
+      {/* KPI Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: '0.5rem' }}>Total Revenue</h3>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>
+            ${kpiData.totalRevenue.toLocaleString()}
+          </div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: '0.5rem' }}>Total Transactions</h3>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#3b82f6' }}>
+            {kpiData.totalTransactions}
+          </div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: '0.5rem' }}>Avg. Deal Value</h3>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>
+            ${kpiData.avgDealValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </div>
+        </div>
+      </div>
 
       <div className="analytics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Sales Chart */}
@@ -176,6 +236,35 @@ export default function AnalyticsPage() {
                    formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
                 />
               </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Cumulative Revenue Trend (Line Chart) */}
+        <div className="card" style={{ height: '400px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gridColumn: '1 / -1' }}>
+          <h3 style={{ marginBottom: '1rem' }}>Cumulative Revenue Growth</h3>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={chartData.lineChartData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="date" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                  itemStyle={{ color: '#e5e7eb' }}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Cumulative Revenue']}
+                />
+                <Area type="monotone" dataKey="cumulativeRevenue" stroke="#82ca9d" fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>

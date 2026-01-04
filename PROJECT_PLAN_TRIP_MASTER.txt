@@ -1,0 +1,95 @@
+# Project Plan: Trip Master - AI-Powered Travel Agency Platform
+
+## 1. Executive Summary
+**Vision:** To provide a complete, AI-driven ecosystem for travel agencies. The platform serves two main functions:
+1.  **Instant Web Presence:** Generates professional travel websites for agencies using AI (Gemini 3) based on a simple description.
+2.  **Intelligent Operations (Trip Master):** A serverless backoffice application for managing bookings, customers, and analytics, powered by advanced AI.
+
+## 2. Technology Stack
+*   **Frontend:** React (Vite) / Next.js (for the generated sites).
+*   **Backend/Infrastructure:** Serverless architecture.
+*   **Database & Auth:** Supabase (PostgreSQL, Auth, Realtime, Storage).
+*   **AI Core:** Gemini 3 (via Google Vertex AI or AI Studio).
+*   **AI Agents:** Custom agents for code generation and data analytics.
+*   **Hosting:** Vercel or Netlify (for dynamic deployment of generated sites).
+
+---
+
+## 3. Phase 1: The "Trip Master" Backoffice (MVP)
+*Goal: Build the core operational platform that agencies will be redirected to.*
+
+### 3.1. Foundation (Supabase)
+*   **Auth:** Multi-tenant setup. Each agency is a "Tenant" or "Organization".
+*   **Database Schema:**
+    *   `agencies`: Profile, settings, branding.
+    *   `trips`: Itineraries, pricing, dates.
+    *   `bookings`: Customer reservations, status.
+    *   `customers`: CRM data (preferences, history).
+*   **Security:** Row Level Security (RLS) to ensure agencies only see their own data.
+
+### 3.2. Core Features
+*   **Dashboard:** Overview of active trips, revenue, and pending tasks.
+*   **Trip Management:** CRUD operations for creating travel packages.
+*   **CRM:** Customer list with history and notes (similar to the Contacts page we built).
+*   **Kanban Board:** For tracking booking stages (Inquiry -> Quote -> Booked -> Completed).
+
+---
+
+## 4. Phase 2: The AI Website Generator
+*Goal: The customer acquisition tool. "Don't have a website? We'll build one in seconds."*
+
+### 4.1. The Intake Flow
+*   **Form:** A simple UI asking:
+    *   Agency Name.
+    *   Niche (e.g., "Luxury Safaris", "Budget Backpacking").
+    *   Target Audience.
+    *   Brand Vibe (e.g., "Minimalist", "Vibrant").
+
+### 4.2. The AI Agent (The "Builder")
+*   **Prompt Engineering:** Construct complex prompts for Gemini 3 to generate React/HTML code based on the form data.
+*   **Asset Generation:** Use AI to pick stock photos (Unsplash API) or generate images matching the niche.
+*   **Copywriting:** AI generates the "About Us", "Tours", and "Contact" text.
+
+### 4.3. Deployment Pipeline
+*   **Code Assembly:** The system packages the AI-generated code.
+*   **Instant Deploy:** Use Vercel/Netlify API to deploy this code to a subdomain (e.g., `safari-kings.tripmaster.com`).
+*   **Handover:** The user gets the link and is prompted to "Claim this site" by signing up for Trip Master.
+
+---
+
+## 5. Phase 3: AI Advanced Analytics & Features
+*Goal: The value-add that keeps agencies using the backoffice.*
+
+### 5.1. Predictive Analytics
+*   **Demand Forecasting:** Analyze historical data to predict which destinations will be popular next season.
+*   **Dynamic Pricing:** AI suggests pricing adjustments based on demand and competitor data.
+
+### 5.2. Smart Itinerary Builder
+*   **Agent:** An AI assistant within Trip Master.
+*   **Input:** "Create a 7-day itinerary for a couple in Kyoto, budget $5k."
+*   **Output:** A complete day-by-day plan with hotels and activities, saved directly to the database.
+
+### 5.3. Automated Customer Support
+*   **Chatbot:** An embedded AI chat widget for the agency's generated website.
+*   **Integration:** It answers questions based on the agency's data in Trip Master (e.g., "Do you have availability for the Bali trip in June?").
+
+---
+
+## 6. Implementation Roadmap
+
+### Step 1: Setup & Core CRM (Weeks 1-2)
+*   Initialize Supabase project.
+*   Build the "Trip Master" dashboard (React/Vite).
+*   Implement Auth and basic CRUD for Trips/Contacts.
+
+### Step 2: The Generator Prototype (Weeks 3-4)
+*   Build the intake form.
+*   Create a Supabase Edge Function that calls Gemini 3.
+*   Test generating simple landing page HTML/CSS strings.
+
+### Step 3: Integration (Weeks 5-6)
+*   Connect the generated sites to the Trip Master database (so inquiries on the site appear in the CRM).
+*   Refine the AI prompts for better design quality.
+
+### Step 4: Advanced AI (Week 7+)
+*   Implement the "Smart Itinerary Builder" using RAG (Retrieval-Augmented Generation) on Supabase Vectors.

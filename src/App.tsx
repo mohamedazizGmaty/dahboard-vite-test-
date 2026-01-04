@@ -8,8 +8,9 @@ import CompaniesPage from './components/CompaniesPage'
 import DealsPage from './components/DealsPage'
 import SettingsPage from './components/SettingsPage'
 import WebsiteBuilderPage from './components/WebsiteBuilderPage'
+import AnalyticsPage from './components/AnalyticsPage'
 
-type Page = 'dashboard' | 'contacts' | 'companies' | 'deals' | 'settings' | 'builder'
+type Page = 'dashboard' | 'contacts' | 'companies' | 'deals' | 'settings' | 'builder' | 'analytics'
 type Theme = 'light' | 'dark'
 
 function App() {
@@ -85,6 +86,16 @@ function App() {
             <span className="nav-icon">💼</span>
             {!isSidebarCollapsed && <span>Deals</span>}
           </button>
+          <button
+            className={
+              activePage === 'analytics' ? 'nav-item nav-item-active' : 'nav-item'
+            }
+            onClick={() => setActivePage('analytics')}
+            title="Analytics"
+          >
+            <span className="nav-icon">📊</span>
+            {!isSidebarCollapsed && <span>Analytics</span>}
+          </button>
         </nav>
 
         <div className="sidebar-footer">
@@ -113,6 +124,7 @@ function App() {
           {activePage === 'contacts' && <ContactsPage />}
           {activePage === 'companies' && <CompaniesPage />}
           {activePage === 'deals' && <DealsPage />}
+          {activePage === 'analytics' && <AnalyticsPage />}
           {activePage === 'settings' && (
             <SettingsPage
               theme={theme}

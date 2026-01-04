@@ -15,13 +15,23 @@ type Theme = 'light' | 'dark'
 function App() {
   const [activePage, setActivePage] = useState<Page>('dashboard')
   const [theme, setTheme] = useState<Theme>('light')
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
   return (
     <div className={`app-shell theme-${theme}`}>
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
-          <div className="sidebar-logo">Company CRM</div>
-          <p className="sidebar-subtitle">Manage customers and deals</p>
+          <div className="sidebar-top-row">
+            {!isSidebarCollapsed && <div className="sidebar-logo">Company CRM</div>}
+            <button 
+              className="sidebar-toggle"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {isSidebarCollapsed ? '➡️' : '⬅️'}
+            </button>
+          </div>
+          {!isSidebarCollapsed && <p className="sidebar-subtitle">Manage customers and deals</p>}
         </div>
 
         <nav className="sidebar-nav">
@@ -30,45 +40,50 @@ function App() {
               activePage === 'dashboard' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('dashboard')}
+            title="Dashboard"
           >
             <span className="nav-icon">🏠</span>
-            <span>Dashboard</span>
+            {!isSidebarCollapsed && <span>Dashboard</span>}
           </button>
           <button
             className={
               activePage === 'builder' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('builder')}
+            title="AI Builder"
           >
             <span className="nav-icon">✨</span>
-            <span>AI Builder</span>
+            {!isSidebarCollapsed && <span>AI Builder</span>}
           </button>
           <button
             className={
               activePage === 'contacts' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('contacts')}
+            title="Contacts"
           >
             <span className="nav-icon">👤</span>
-            <span>Contacts</span>
+            {!isSidebarCollapsed && <span>Contacts</span>}
           </button>
           <button
             className={
               activePage === 'companies' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('companies')}
+            title="Companies"
           >
             <span className="nav-icon">🏢</span>
-            <span>Companies</span>
+            {!isSidebarCollapsed && <span>Companies</span>}
           </button>
           <button
             className={
               activePage === 'deals' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('deals')}
+            title="Deals"
           >
             <span className="nav-icon">💼</span>
-            <span>Deals</span>
+            {!isSidebarCollapsed && <span>Deals</span>}
           </button>
         </nav>
 
@@ -78,9 +93,10 @@ function App() {
               activePage === 'settings' ? 'nav-item nav-item-active' : 'nav-item'
             }
             onClick={() => setActivePage('settings')}
+            title="Settings"
           >
             <span className="nav-icon">⚙️</span>
-            <span>Settings</span>
+            {!isSidebarCollapsed && <span>Settings</span>}
           </button>
         </div>
       </aside>

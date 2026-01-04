@@ -13,7 +13,7 @@ export default function WebsiteBuilderPage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Hello! I am your AI Website Builder. Describe your dream travel agency website, and I will build it for you.',
+      content: 'Hello! I am your CRM Assistant. Ask me anything about managing your customer relationships, sales pipelines, or business contacts.',
       timestamp: new Date()
     }
   ])
@@ -65,13 +65,34 @@ export default function WebsiteBuilderPage() {
       let usedModel = '';
       
       // Try multiple models in sequence
-      const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'gemini-1.0-pro'];
+      const modelsToTry = [
+        'gemini-2.0-flash',
+        'gemini-2.5-flash',
+        'gemini-2.5-pro',
+        'gemini-1.5-flash',
+        'gemini-pro'
+      ];
       const errors: string[] = [];
       
+      const systemPrompt = `You are a specialized CRM (Customer Relationship Management) Assistant for a company.
+      Your role is to strictly answer questions related to CRM, sales, leads, customers, business strategies, and data management.
+      
+      IMPORTANT RULES:
+      1. If the user asks about anything outside of CRM/Business context (like sports, general coding, jokes, weather, etc.), you must politely REFUSE to answer.
+      2. Say something like: "I am a CRM Assistant. I can only help you with questions related to customer relationship management."
+      3. Do not break character.
+      4. FORMATTING: 
+         - Use clear structure with headings, bullet points, and bold text.
+         - Do NOT output large blocks of unstructured text.
+         - Use newlines to separate sections.
+         - When listing items, use bullet points (*) or numbered lists.
+      
+      User Query: ${inputValue}`;
+
       for (const modelName of modelsToTry) {
         try {
           const model = genAI.getGenerativeModel({ model: modelName })
-          result = await model.generateContent(inputValue)
+          result = await model.generateContent(systemPrompt)
           usedModel = modelName;
           break; // Success!
         } catch (e: any) {
@@ -81,7 +102,21 @@ export default function WebsiteBuilderPage() {
       }
 
       if (!result) {
-        throw new Error(`All models failed. Details: ${errors.join(' | ')}`)
+        // Debugging: List available models to help diagnose
+        let availableModels = 'Unable to list models';
+        try {
+             const listResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${cleanKey}`);
+             const listData = await listResponse.json();
+             if (listData.models) {
+                 availableModels = listData.models.map((m: any) => m.name.replace('models/', '')).join(', ');
+             } else if (listData.error) {
+                 availableModels = `API Error: ${listData.error.message}`;
+             }
+        } catch (fetchError) {
+            availableModels = 'Network error listing models';
+        }
+
+        throw new Error(`All models failed. Available models for your key: [${availableModels}]. Details: ${errors.join(' | ')}`)
       }
 
       const response = await result.response
@@ -122,9 +157,9 @@ export default function WebsiteBuilderPage() {
     <section className="page">
       <header className="page-header">
         <div>
-          <h1>AI Website Builder</h1>
+          <h1>CRM AI Assistant</h1>
           <p className="page-description">
-            Create and manage your travel website with AI
+            Your expert guide for Customer Relationship Management
           </p>
         </div>
       </header>
@@ -151,12 +186,12 @@ export default function WebsiteBuilderPage() {
               <div className="message-content">
                 <div className="working-indicator">
                   <div className="gear-spinner">⚙️</div>
-                  <span>Analyzing requirements...</span>
+                  <span>Processing request...</span>
                 </div>
                 <div className="working-steps">
-                  <div className="step step-1">Generating layout structure</div>
-                  <div className="step step-2">Selecting color palette</div>
-                  <div className="step step-3">Writing copy</div>
+                  <div className="step step-1">Analyzing query context</div>
+                  <div className="step step-2">Searching CRM knowledge base</div>
+                  <div className="step step-3">Formulating response</div>
                 </div>
               </div>
             </div>
@@ -169,7 +204,7 @@ export default function WebsiteBuilderPage() {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Describe your website (e.g., 'A luxury safari travel agency for Kenya')..."
+            placeholder="Ask about leads, contacts, or sales strategies..."
             disabled={isWorking}
           />
           <button type="submit" disabled={!inputValue.trim() || isWorking}>

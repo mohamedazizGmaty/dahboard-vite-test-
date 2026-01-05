@@ -2,8 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import DashboardPage from './components/DashboardPage'
 import ContactsPage from './components/ContactsPage'
-import CompaniesPage from './components/CompaniesPage'
-import DealsPage from './components/DealsPage'
 import SettingsPage from './components/SettingsPage'
 import WebsiteBuilderPage from './components/WebsiteBuilderPage'
 import AnalyticsPage from './components/AnalyticsPage'
@@ -22,14 +20,29 @@ function App() {
         
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/contacts" element={<ContactsPage />} />
-            <Route path="/companies" element={<CompaniesPage />} />
-            <Route path="/deals" element={<DealsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/builder" element={<WebsiteBuilderPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/roles" element={<RolesPage />} />
+            <Route element={<ProtectedRoute requiredPermission="view_dashboard" />}>
+              <Route path="/" element={<DashboardPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_contacts" />}>
+              <Route path="/contacts" element={<ContactsPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_settings" />}>
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_builder" />}>
+              <Route path="/builder" element={<WebsiteBuilderPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_analytics" />}>
+              <Route path="/analytics" element={<AnalyticsPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_roles" />}>
+              <Route path="/roles" element={<RolesPage />} />
+            </Route>
           </Route>
         </Route>
 

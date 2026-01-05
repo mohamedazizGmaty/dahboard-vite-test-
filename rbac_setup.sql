@@ -29,9 +29,9 @@ create policy "Authenticated users can manage roles"
 -- 4. Insert Default Roles
 insert into public.roles_definitions (id, name, description, permissions)
 values 
-  ('admin', 'Admin', 'Full access to all features and settings', '{"aiModelTraining": true, "heatmapVisualization": true, "viewer": true, "arSceneDeployment": true, "dataExport": true}'),
-  ('editor', 'Editor', 'Can edit content and view analytics', '{"aiModelTraining": false, "heatmapVisualization": true, "viewer": true, "arSceneDeployment": true, "dataExport": true}'),
-  ('viewer', 'Viewer', 'Read-only access to published content', '{"aiModelTraining": false, "heatmapVisualization": true, "viewer": true, "arSceneDeployment": false, "dataExport": false}')
+  ('admin', 'Admin', 'Full access to all features and settings', '{"view_dashboard": true, "view_builder": true, "view_contacts": true, "view_analytics": true, "view_roles": true, "view_settings": true}'),
+  ('editor', 'Editor', 'Can edit content and view analytics', '{"view_dashboard": true, "view_builder": true, "view_contacts": true, "view_analytics": true, "view_roles": false, "view_settings": false}'),
+  ('viewer', 'Viewer', 'Read-only access to published content', '{"view_dashboard": true, "view_builder": false, "view_contacts": false, "view_analytics": true, "view_roles": false, "view_settings": false}')
 on conflict (id) do update 
 set permissions = EXCLUDED.permissions;
 

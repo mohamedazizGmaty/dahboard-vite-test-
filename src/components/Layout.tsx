@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
+import { useAuth } from '../contexts/AuthContext'
 
 type Theme = 'light' | 'dark'
 
@@ -9,12 +10,15 @@ export const Layout = () => {
   const [theme, setTheme] = useState<Theme>('light')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const location = useLocation()
+  const { permissions } = useAuth()
 
   const isActive = (path: string) => {
     if (path === '/' && location.pathname === '/') return true
     if (path !== '/' && location.pathname.startsWith(path)) return true
     return false
   }
+
+  const hasPermission = (perm: string) => permissions.includes(perm)
 
   return (
     <div className={`app-shell theme-${theme}`}>
@@ -34,56 +38,71 @@ export const Layout = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <Link
-            to="/"
-            className={isActive('/') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Dashboard"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-house"></i></span>
-            {!isSidebarCollapsed && <span>Dashboard</span>}
-          </Link>
-          <Link
-            to="/builder"
-            className={isActive('/builder') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="AI Builder"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-brain"></i></span>
-            {!isSidebarCollapsed && <span>AI Builder</span>}
-          </Link>
-          <Link
-            to="/contacts"
-            className={isActive('/contacts') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Contacts"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-user"></i></span>
-            {!isSidebarCollapsed && <span>Contacts</span>}
-          </Link>
-          <Link
-            to="/analytics"
-            className={isActive('/analytics') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Analytics"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-chart-column"></i>
-</span>
-            {!isSidebarCollapsed && <span>Analytics</span>}
-          </Link>
-          <Link
-            to="/roles"
-            className={isActive('/roles') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Roles & Permissions"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-user-shield"></i></span>
-            {!isSidebarCollapsed && <span>Roles & Permissions</span>}
-          </Link>
-          <Link
-            to="/settings"
-            className={isActive('/settings') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Settings"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-gear"></i>
-</span>
-            {!isSidebarCollapsed && <span>Settings</span>}
-          </Link>
+          {hasPermission('view_dashboard') && (
+            <Link
+              to="/"
+              className={isActive('/') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Dashboard"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-house"></i></span>
+              {!isSidebarCollapsed && <span>Dashboard</span>}
+            </Link>
+          )}
+          
+          {hasPermission('view_builder') && (
+            <Link
+              to="/builder"
+              className={isActive('/builder') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="AI Builder"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-brain"></i></span>
+              {!isSidebarCollapsed && <span>AI Builder</span>}
+            </Link>
+          )}
+
+          {hasPermission('view_contacts') && (
+            <Link
+              to="/contacts"
+              className={isActive('/contacts') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Contacts"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-user"></i></span>
+              {!isSidebarCollapsed && <span>Contacts</span>}
+            </Link>
+          )}
+
+          {hasPermission('view_analytics') && (
+            <Link
+              to="/analytics"
+              className={isActive('/analytics') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Analytics"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-chart-column"></i></span>
+              {!isSidebarCollapsed && <span>Analytics</span>}
+            </Link>
+          )}
+
+          {hasPermission('view_roles') && (
+            <Link
+              to="/roles"
+              className={isActive('/roles') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Roles & Permissions"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-user-shield"></i></span>
+              {!isSidebarCollapsed && <span>Roles & Permissions</span>}
+            </Link>
+          )}
+
+          {hasPermission('view_settings') && (
+            <Link
+              to="/settings"
+              className={isActive('/settings') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Settings"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-gear"></i></span>
+              {!isSidebarCollapsed && <span>Settings</span>}
+            </Link>
+          )}
         </nav>
 
         <div className="sidebar-footer">

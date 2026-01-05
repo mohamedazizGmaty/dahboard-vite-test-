@@ -335,3 +335,101 @@ input:checked + .slider:before {
 .primary-btn:hover {
   background-color: #059669;
 }
+
+/* Dark Mode Support */
+.theme-dark .roles-page {
+  background-color: #111827;
+  color: #f3f4f6;
+}
+
+.theme-dark .roles-header h1 {
+  color: #f3f4f6;
+}
+
+.theme-dark .roles-header p {
+  color: #9ca3af;
+}
+
+.theme-dark .tabs {
+  border-bottom-color: #374151;
+}
+
+.theme-dark .tab-btn {
+  color: #9ca3af;
+}
+
+.theme-dark .tab-btn:hover {
+  color: #e5e7eb;
+}
+
+.theme-dark .tab-btn.active {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
+
+/* Dark Mode - Users Table */
+.theme-dark .users-table-container {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.theme-dark .users-table th {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-bottom-color: #4b5563;
+}
+
+.theme-dark .users-table td {
+  border-bottom-color: #374151;
+  color: #d1d5db;
+}
+
+.theme-dark .user-avatar {
+  background-color: #374151;
+}
+
+.theme-dark .user-info h4 {
+  color: #f3f4f6;
+}
+
+.theme-dark .user-info span {
+  color: #9ca3af;
+}
+
+.theme-dark .role-badge {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+.theme-dark .status-inactive {
+  background-color: #374151;
+  color: #9ca3af;
+}
+
+.theme-dark .action-btn {
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.theme-dark .action-btn:hover {
+  background-color: #374151;
+}
+
+/* Dark Mode - Roles Grid */
+.theme-dark .role-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.theme-dark .role-card-header h3 {
+  color: #f3f4f6;
+}
+
+.theme-dark .role-description {
+  color: #9ca3af;
+}
+
+.theme-dark .permission-tag {
+  background-color: #374151;
+  color: #e5e7eb;
+}

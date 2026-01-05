@@ -9,11 +9,12 @@ interface Permission {
 }
 
 const AVAILABLE_PERMISSIONS: Permission[] = [
-  { id: '1', label: 'AI Model Training Rights', key: 'aiModelTraining' },
-  { id: '2', label: 'Heatmap Visualization Access', key: 'heatmapVisualization' },
-  { id: '3', label: 'Viewer', key: 'viewer' },
-  { id: '4', label: 'AR Scene Deployment', key: 'arSceneDeployment' },
-  { id: '5', label: 'Data Export', key: 'dataExport' },
+  { id: '1', label: 'View Dashboard', key: 'view_dashboard' },
+  { id: '2', label: 'Access AI Builder', key: 'view_builder' },
+  { id: '3', label: 'View Contacts', key: 'view_contacts' },
+  { id: '4', label: 'View Analytics', key: 'view_analytics' },
+  { id: '5', label: 'Manage Roles & Permissions', key: 'view_roles' },
+  { id: '6', label: 'Access Settings', key: 'view_settings' },
 ]
 
 interface Role {
@@ -224,11 +225,12 @@ export default function RolesPage() {
       name: newRoleName,
       description: 'New custom role',
       permissions: {
-        aiModelTraining: false,
-        heatmapVisualization: false,
-        viewer: true,
-        arSceneDeployment: false,
-        dataExport: false
+        view_dashboard: false,
+        view_builder: false,
+        view_contacts: false,
+        view_analytics: false,
+        view_roles: false,
+        view_settings: false
       }
     }
 

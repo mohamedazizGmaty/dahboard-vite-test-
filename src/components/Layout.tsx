@@ -59,23 +59,6 @@ export const Layout = () => {
             {!isSidebarCollapsed && <span>Contacts</span>}
           </Link>
           <Link
-            to="/companies"
-            className={isActive('/companies') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Companies"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-building"></i></span>
-            {!isSidebarCollapsed && <span>Companies</span>}
-          </Link>
-          <Link
-            to="/deals"
-            className={isActive('/deals') ? 'nav-item nav-item-active' : 'nav-item'}
-            title="Deals"
-          >
-            <span className="nav-icon"><i className="fa-solid fa-briefcase"></i>
-</span>
-            {!isSidebarCollapsed && <span>Deals</span>}
-          </Link>
-          <Link
             to="/analytics"
             className={isActive('/analytics') ? 'nav-item nav-item-active' : 'nav-item'}
             title="Analytics"
@@ -83,6 +66,14 @@ export const Layout = () => {
             <span className="nav-icon"><i className="fa-solid fa-chart-column"></i>
 </span>
             {!isSidebarCollapsed && <span>Analytics</span>}
+          </Link>
+          <Link
+            to="/roles"
+            className={isActive('/roles') ? 'nav-item nav-item-active' : 'nav-item'}
+            title="Roles & Permissions"
+          >
+            <span className="nav-icon"><i className="fa-solid fa-user-shield"></i></span>
+            {!isSidebarCollapsed && <span>Roles & Permissions</span>}
           </Link>
           <Link
             to="/settings"

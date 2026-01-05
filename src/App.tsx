@@ -7,6 +7,7 @@ import DealsPage from './components/DealsPage'
 import SettingsPage from './components/SettingsPage'
 import WebsiteBuilderPage from './components/WebsiteBuilderPage'
 import AnalyticsPage from './components/AnalyticsPage'
+import RolesPage from './components/RolesPage'
 import { LoginPage } from './components/LoginPage'
 import { SignupPage } from './components/SignupPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -28,6 +29,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/builder" element={<WebsiteBuilderPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/roles" element={<RolesPage />} />
           </Route>
         </Route>
 

@@ -1,5 +1,6 @@
 import type React from 'react'
 import { useOutletContext } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 type Theme = 'light' | 'dark'
 
@@ -10,6 +11,7 @@ type ContextType = {
 
 const SettingsPage: React.FC = () => {
   const { theme, setTheme } = useOutletContext<ContextType>()
+  const { session } = useAuth()
 
   return (
     <section className="page">
@@ -80,6 +82,40 @@ const SettingsPage: React.FC = () => {
               </button>
             </div>
           </form>
+        </div>
+
+        <div className="card">
+          <h2 className="card-title">Session & Security</h2>
+          <div className="form-grid">
+            <div className="form-field form-field-full">
+              <label>Session Status</label>
+              <div style={{ padding: '0.5rem', background: 'var(--bg-secondary)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                {session ? 'Active' : 'Inactive'}
+              </div>
+            </div>
+            
+            {session && (
+              <>
+                <div className="form-field form-field-full">
+                  <label>Token Expiration</label>
+                  <div style={{ padding: '0.5rem', background: 'var(--bg-secondary)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                    {session.expires_at ? new Date(session.expires_at * 1000).toLocaleString() : 'Unknown'}
+                  </div>
+                </div>
+                <div className="form-field form-field-full">
+                  <label>Access Token (Preview)</label>
+                  <div style={{ padding: '0.5rem', background: 'var(--bg-secondary)', borderRadius: '4px', fontSize: '0.8rem', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                    {session.access_token.substring(0, 20)}...
+                  </div>
+                </div>
+                <div className="form-field form-field-full">
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    Supabase automatically refreshes this token before it expires.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </section>

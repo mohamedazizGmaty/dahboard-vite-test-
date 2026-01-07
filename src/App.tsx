@@ -6,6 +6,7 @@ import SettingsPage from './components/SettingsPage'
 import WebsiteBuilderPage from './components/WebsiteBuilderPage'
 import AnalyticsPage from './components/AnalyticsPage'
 import RolesPage from './components/RolesPage'
+import AlertsPage from './components/AlertsPage'
 import { LoginPage } from './components/LoginPage'
 import { SignupPage } from './components/SignupPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -38,6 +39,10 @@ function App() {
 
             <Route element={<ProtectedRoute requiredPermission="view_analytics" />}>
               <Route path="/analytics" element={<AnalyticsPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute requiredPermission="view_analytics" />}>
+              <Route path="/alerts" element={<AlertsPage />} />
             </Route>
 
             <Route element={<ProtectedRoute requiredPermission="view_roles" />}>

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useOutletContext } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 interface ProtectedRouteProps {
@@ -7,6 +7,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ requiredPermission }: ProtectedRouteProps) => {
   const { user, loading, permissions } = useAuth()
+  const context = useOutletContext()
 
   if (loading) {
     return <div style={{ padding: '2rem', color: '#6b7280' }}>Loading...</div>
@@ -25,5 +26,5 @@ export const ProtectedRoute = ({ requiredPermission }: ProtectedRouteProps) => {
     )
   }
 
-  return <Outlet />
+  return <Outlet context={context} />
 }

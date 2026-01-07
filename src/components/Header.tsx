@@ -13,6 +13,9 @@ export default function Header({ theme, setTheme }: HeaderProps) {
     const navigate = useNavigate()
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
+    
+    // Prefer avatar URL from auth provider metadata if present
+    const avatarUrl = (user?.user_metadata as any)?.avatar_url || (user?.user_metadata as any)?.picture || ''
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -55,7 +58,11 @@ export default function Header({ theme, setTheme }: HeaderProps) {
                         className="profile-trigger"
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <div className="avatar">{user?.email?.charAt(0).toUpperCase() || 'U'}</div>
+                        {avatarUrl ? (
+                            <img src={avatarUrl} alt="Profile" className="avatar-img" />
+                        ) : (
+                            <div className="avatar">{user?.email?.charAt(0).toUpperCase() || 'U'}</div>
+                        )}
                     </button>
 
                     {isDropdownOpen && (

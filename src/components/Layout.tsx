@@ -82,6 +82,17 @@ export const Layout = () => {
             </Link>
           )}
 
+          {hasPermission('view_analytics') && (
+            <Link
+              to="/alerts"
+              className={isActive('/alerts') ? 'nav-item nav-item-active' : 'nav-item'}
+              title="Alerts & Budgets"
+            >
+              <span className="nav-icon"><i className="fa-solid fa-bell"></i></span>
+              {!isSidebarCollapsed && <span>Alerts & Budgets</span>}
+            </Link>
+          )}
+
           {hasPermission('view_roles') && (
             <Link
               to="/roles"

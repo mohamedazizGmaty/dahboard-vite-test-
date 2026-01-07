@@ -67,6 +67,8 @@ const DashboardPage: React.FC = () => {
         </div>
       </header>
 
+   
+
       {/* Stats Grid */}
       <div className="grid grid-3">
         <div className="card">
@@ -130,33 +132,26 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Actions / Activity */}
+            {/* Alerts Summary */}
         <div className="card">
-          <h2 className="card-title">Recent Activity</h2>
-          <ul className="activity-list">
+          <p className="card-label">Alerts</p>
+          <p className="card-helper">Budget thresholds preview (UI sample)</p>
+          <ul className="activity-list" style={{ marginTop: '0.5rem' }}>
             <li>
-              <span style={{ marginRight: '0.5rem' }}>📧</span>
-              <span>Email sent to <span className="highlight">TechFlow</span></span>
-              <div style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: '1.5rem' }}>2 hours ago</div>
+              <span style={{ marginRight: '0.5rem' }}>⚠��</span>
+              AI Usage (Gemini) - Monthly approaching threshold
             </li>
             <li>
-              <span style={{ marginRight: '0.5rem' }}>💰</span>
-              <span>Deal closed with <span className="highlight">David Brown</span></span>
-              <div style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: '1.5rem' }}>5 hours ago</div>
-            </li>
-            <li>
-              <span style={{ marginRight: '0.5rem' }}>📞</span>
-              <span>Call scheduled with <span className="highlight">Eva Green</span></span>
-              <div style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: '1.5rem' }}>Yesterday</div>
-            </li>
-            <li>
-              <span style={{ marginRight: '0.5rem' }}>🤖</span>
-              <span>AI generated report for <span className="highlight">Q1 Sales</span></span>
-              <div style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: '1.5rem' }}>Yesterday</div>
+              <span style={{ marginRight: '0.5rem' }}>⚠️</span>
+              Enterprise Customer Budget - Q1 at 64%
             </li>
           </ul>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.75rem' }}>
+            <a href="/alerts" className="btn btn-secondary">View Alerts</a>
+          </div>
         </div>
-      </div>
+    
+        </div>
 
       {/* Floating Chat Widget */}
       <ChatWidget />

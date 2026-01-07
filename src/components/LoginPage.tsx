@@ -23,7 +23,7 @@ export const LoginPage = () => {
       setLoading(false)
     } else {
       // Successful login, redirect to dashboard
-      navigate('/')
+      navigate('/dashboard')
     }
   }
 
@@ -36,7 +36,7 @@ export const LoginPage = () => {
     <Login className="login-page3">
          <Login.Banner style={{ backgroundImage: 'url(https://visaliv.com/business-directories/uploads/listing_thumbnails/ID-TA/travel-agency52.jpg)' }} />
 
-      <Login.Welcome>Welcome back! Log in to your account.</Login.Welcome>
+      <Login.Welcome>Log in to Strollup</Login.Welcome>
       
       <Login.Email 
         value={email} 

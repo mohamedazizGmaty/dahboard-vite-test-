@@ -9,6 +9,7 @@ import RolesPage from './components/RolesPage'
 import AlertsPage from './components/AlertsPage'
 import { LoginPage } from './components/LoginPage'
 import { SignupPage } from './components/SignupPage'
+import LandingPage from './components/LandingPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
 
@@ -18,11 +19,12 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/" element={<LandingPage />} />
         
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route element={<ProtectedRoute requiredPermission="view_dashboard" />}>
-              <Route path="/" element={<DashboardPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
             </Route>
 
             <Route element={<ProtectedRoute requiredPermission="view_contacts" />}>

@@ -35,7 +35,7 @@ export default function Header({ theme, setTheme }: HeaderProps) {
     return (
         <header className="topbar">
             <div className="topbar-left">
-                <span className="topbar-title">Company CRM</span>
+                <span className="topbar-title">Strollup</span>
                 <span className="topbar-subtitle">
                     Simple dashboard UI, ready for Supabase later
                 </span>

@@ -25,7 +25,7 @@ export const Layout = () => {
       <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-top-row">
-            {!isSidebarCollapsed && <div className="sidebar-logo">Company CRM</div>}
+            {!isSidebarCollapsed && <div className="sidebar-logo">Strollup</div>}
             <button 
               className="sidebar-toggle"
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -40,8 +40,8 @@ export const Layout = () => {
         <nav className="sidebar-nav">
           {hasPermission('view_dashboard') && (
             <Link
-              to="/"
-              className={isActive('/') ? 'nav-item nav-item-active' : 'nav-item'}
+              to="/dashboard"
+              className={isActive('/dashboard') ? 'nav-item nav-item-active' : 'nav-item'}
               title="Dashboard"
             >
               <span className="nav-icon"><i className="fa-solid fa-house"></i></span>

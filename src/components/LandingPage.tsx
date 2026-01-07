@@ -33,77 +33,78 @@ export default function LandingPage() {
       </header>
 
       <main className="landing-hero">
-        <h1 className="landing-title">
-          Manage Your Business<br />
-          With Strollup
-        </h1>
-        <p className="landing-subtitle">
-          The all-in-one CRM platform designed for growth. 
-          Streamline your operations, boost productivity, and drive results.
-        </p>
+        <div className="hero-content">
+          <h1 className="landing-title">
+            Build Your Travel Agency's<br />
+            AI-Powered Website
+          </h1>
+          <p className="landing-subtitle">
+            The #1 AI website builder for professional travel companies.
+            Create stunning, high-converting booking platforms in minutes, not months.
+          </p>
+        </div>
 
         <div className="landing-form-container">
           <div className="landing-form-header">
-            <h2 className="landing-form-title">Start Your Free Trial</h2>
+            <h2 className="landing-form-title">Start Building Today</h2>
             <p className="landing-form-desc">
-              Join thousands of businesses growing with Strollup.
+              Get early access to our AI travel website generator.
             </p>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="First Name">
-                <Input 
-                  type="text" 
-                  placeholder="John" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </Field>
-              <Field label="Last Name">
-                <Input 
-                  type="text" 
-                  placeholder="Doe" 
-                  required
-                />
-              </Field>
+          <form onSubmit={handleSubmit} className="landing-form">
+            <div className="form-field">
+              <label className="form-label">First Name</label>
+              <input 
+                type="text" 
+                placeholder="John" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-field">
+              <label className="form-label">Last Name</label>
+              <input 
+                type="text" 
+                placeholder="Doe" 
+                required
+                className="form-input"
+              />
             </div>
 
-            <Field label="Work Email">
-              <Input 
-                type="email" 
-                placeholder="john@company.com" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Field>
+            
 
-            <Field label="Company Name">
-              <Input 
+            <div className="form-field">
+              <label className="form-label">Agency Name</label>
+              <input 
                 type="text" 
-                placeholder="Acme Inc." 
+                placeholder="Global Travels Inc." 
                 required
+                className="form-input"
               />
-            </Field>
+            </div>
 
-            <Field label="Job Role">
-                <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                    <option value="" disabled selected>Select your role</option>
-                    <option value="founder">Founder / CEO</option>
-                    <option value="sales">Sales Manager</option>
-                    <option value="marketing">Marketing Manager</option>
-                    <option value="other">Other</option>
-                </select>
-            </Field>
+            <div className="form-field">
+              <label className="form-label">Business Type</label>
+              <select required className="form-select">
+                <option value="" disabled selected>Select agency type</option>
+                <option value="luxury">Luxury Travel</option>
+                <option value="corporate">Corporate Travel</option>
+                <option value="adventure">Adventure / Tours</option>
+                <option value="ota">Online Travel Agent</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
 
-            <button type="submit" className="btn btn-primary w-full" style={{ marginTop: '1.5rem' }}>
-              Get Started with Strollup
+            <button type="submit" className="form-submit-btn">
+              Create My AI Website
             </button>
             
-            <p className="text-xs text-center text-gray-500 mt-4">
-              By clicking "Get Started", you agree to our Terms of Service. No credit card required.
+            <p className="form-footer">
+              🎉 Free 14-day trial · No credit card required
             </p>
           </form>
         </div>
@@ -111,21 +112,21 @@ export default function LandingPage() {
 
       <section className="features-section">
         <div className="feature-card">
-          <h3 className="feature-title">Analytics First</h3>
+          <h3 className="feature-title">AI Itinerary Builder</h3>
           <p className="feature-desc">
-            Gain deep insights into your business performance with our advanced analytics dashboard.
+            Automatically generate day-by-day itineraries based on traveler preferences using our travel-tuned AI.
           </p>
         </div>
         <div className="feature-card">
-          <h3 className="feature-title">Role Management</h3>
+          <h3 className="feature-title">Smart Booking Engine</h3>
           <p className="feature-desc">
-            Granular access control tailored to your organization structure.
+            Integrated booking system for flights, hotels, and tours tailored for travel professionals.
           </p>
         </div>
         <div className="feature-card">
-          <h3 className="feature-title">Website Builder</h3>
+          <h3 className="feature-title">Dynamic Content</h3>
           <p className="feature-desc">
-            Create stunning landing pages within minutes using our built-in builder.
+            Your website updates automatically with trending destinations and seasonal packages.
           </p>
         </div>
       </section>

@@ -1,133 +1,17 @@
-import { useState } from 'react'
-import { Outlet, Link, useLocation } from 'react-router-dom'
-import Header from './Header'
-import Footer from './Footer'
-import { useAuth } from '../contexts/AuthContext'
+import { Navbar } from "@/components/Navbar"
+import { Footer } from "@/components/Footer"
+import { Outlet } from "react-router-dom"
+import { ChatBot } from "@/components/ChatBot"
 
-type Theme = 'light' | 'dark'
-
-export const Layout = () => {
-  const [theme, setTheme] = useState<Theme>('light')
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
-  const location = useLocation()
-  const { permissions } = useAuth()
-
-  const isActive = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true
-    if (path !== '/' && location.pathname.startsWith(path)) return true
-    return false
-  }
-
-  const hasPermission = (perm: string) => permissions.includes(perm)
-
-  return (
-    <div className={`app-shell theme-${theme}`}>
-      <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
-        <div className="sidebar-header">
-          <div className="sidebar-top-row">
-            {!isSidebarCollapsed && <div className="sidebar-logo">Strollup</div>}
-            <button 
-              className="sidebar-toggle"
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              {isSidebarCollapsed ? '☰' : '✕'}
-            </button>
-          </div>
-          {!isSidebarCollapsed && <p className="sidebar-subtitle">Manage customers and deals</p>}
+export function Layout() {
+    return (
+        <div className="min-h-screen bg-background text-foreground">
+            <Navbar />
+            <div className="min-h-screen">
+                <Outlet />
+            </div>
+            <Footer />
+            <ChatBot />
         </div>
-
-        <nav className="sidebar-nav">
-          {hasPermission('view_dashboard') && (
-            <Link
-              to="/dashboard"
-              className={isActive('/dashboard') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Dashboard"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-house"></i></span>
-              {!isSidebarCollapsed && <span>Dashboard</span>}
-            </Link>
-          )}
-          
-          {hasPermission('view_builder') && (
-            <Link
-              to="/builder"
-              className={isActive('/builder') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="AI Builder"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-brain"></i></span>
-              {!isSidebarCollapsed && <span>AI Builder</span>}
-            </Link>
-          )}
-
-          {hasPermission('view_contacts') && (
-            <Link
-              to="/contacts"
-              className={isActive('/contacts') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Contacts"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-user"></i></span>
-              {!isSidebarCollapsed && <span>Contacts</span>}
-            </Link>
-          )}
-
-          {hasPermission('view_analytics') && (
-            <Link
-              to="/analytics"
-              className={isActive('/analytics') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Analytics"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-chart-column"></i></span>
-              {!isSidebarCollapsed && <span>Analytics</span>}
-            </Link>
-          )}
-
-          {hasPermission('view_analytics') && (
-            <Link
-              to="/alerts"
-              className={isActive('/alerts') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Alerts & Budgets"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-bell"></i></span>
-              {!isSidebarCollapsed && <span>Alerts & Budgets</span>}
-            </Link>
-          )}
-
-          {hasPermission('view_roles') && (
-            <Link
-              to="/roles"
-              className={isActive('/roles') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Roles & Permissions"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-user-shield"></i></span>
-              {!isSidebarCollapsed && <span>Roles & Permissions</span>}
-            </Link>
-          )}
-
-          {hasPermission('view_settings') && (
-            <Link
-              to="/settings"
-              className={isActive('/settings') ? 'nav-item nav-item-active' : 'nav-item'}
-              title="Settings"
-            >
-              <span className="nav-icon"><i className="fa-solid fa-gear"></i></span>
-              {!isSidebarCollapsed && <span>Settings</span>}
-            </Link>
-          )}
-        </nav>
-
-        <div className="sidebar-footer">
-          {/* Footer content if needed */}
-        </div>
-      </aside>
-
-      <div className="main-content">
-        <Header theme={theme} setTheme={setTheme} />
-        <main className="page-container">
-          <Outlet context={{ theme, setTheme }} />
-        </main>
-        <Footer />
-      </div>
-    </div>
-  )
+    )
 }

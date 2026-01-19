@@ -1,9 +1,8 @@
 import { Hero } from "@/components/Hero"
+import { SolutionVideo } from "@/components/SolutionVideo"
 import { PainSection } from "@/components/PainSection"
-import { ClaimSection } from "@/components/ClaimSection"
 import { Features } from "@/components/Features"
 import { WhyStrollUP } from "@/components/WhyStrollUP"
-import { HowItWorks } from "@/components/HowItWorks"
 import { Pricing } from "@/components/Pricing"
 import { LeadForm } from "@/components/LeadForm"
 import { CallToAction } from "@/components/CallToAction"
@@ -13,10 +12,11 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-black">
       <Hero />
+      <SolutionVideo />
       <PainSection />
       <Features />
       <WhyStrollUP />
--      <SocialProof />
+      <SocialProof />
       <Pricing />
       <LeadForm />
       <CallToAction />
